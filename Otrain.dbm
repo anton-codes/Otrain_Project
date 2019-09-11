@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.1" last-position="0,0" last-zoom="1"
+	 default-schema="public" default-owner="postgres">
+<role name="sid"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="web"
+      inherit="true"
+      encrypted="true"
+      password="********">
+	<roles names="sid" role-type="member" />
+</role>
+
+<database name="OTrain" encoding="UTF8" lc-collate="English_United States.1252" lc-ctype="English_United States.1252" is-template="false" allow-conns="true">
+	<role name="postgres"/>
+	<tablespace name="pg_default"/>
+</database>
+
+<schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<table name="driver_t">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="60" y="60"/>
+	<column name="driv_id" not-null="true">
+		<type name="character" length="4"/>
+	</column>
+	<column name="driv_fname">
+		<type name="character varying" length="30"/>
+	</column>
+	<column name="driv_lname" not-null="true">
+		<type name="character varying" length="30"/>
+	</column>
+	<constraint name="pk_driver_t" type="pk-constr" table="public.driver_t">
+		<columns names="driv_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="route_t">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="320" y="60"/>
+	<column name="route_id" not-null="true">
+		<type name="character" length="3"/>
+	</column>
+	<column name="route_stops">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="route_timetable" not-null="true">
+		<type name="character" length="2"/>
+	</column>
+	<constraint name="pk_route_t" type="pk-constr" table="public.route_t">
+		<columns names="route_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="stop_t">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="600" y="420"/>
+	<column name="stop_id" not-null="true">
+		<type name="character" length="5"/>
+	</column>
+	<column name="stop_loc">
+		<type name="character" length="5"/>
+	</column>
+	<column name="stop_number" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="pk_stop_t" type="pk-constr" table="public.stop_t">
+		<columns names="stop_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="route_stop_t">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="620" y="60"/>
+	<column name="stop_id" not-null="true">
+		<type name="character" length="3"/>
+	</column>
+	<column name="route_id" not-null="true">
+		<type name="character" length="3"/>
+	</column>
+</table>
+
+<table name="train_t">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="140" y="400"/>
+	<column name="train_id" not-null="true">
+		<type name="character" length="4"/>
+	</column>
+	<column name="route_id" not-null="true">
+		<type name="character" length="3"/>
+	</column>
+	<column name="driv_id" not-null="true">
+		<type name="character" length="4"/>
+	</column>
+	<constraint name="pk_train_t" type="pk-constr" table="public.train_t">
+		<columns names="train_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="train_t_driv_id_key" type="uq-constr" table="public.train_t">
+		<columns names="driv_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="timetable_t">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="400" y="240"/>
+	<column name="timetable_id" not-null="true">
+		<type name="character" length="3"/>
+	</column>
+	<column name="timetable_route" not-null="true">
+		<type name="character" length="3"/>
+	</column>
+	<column name="train_id" not-null="true">
+		<type name="character" length="3"/>
+	</column>
+	<column name="timetable_stop_id" not-null="true">
+		<type name="character" length="3"/>
+	</column>
+	<column name="arrival_time" default-value="NULL::bpchar">
+		<type name="character" length="4"/>
+	</column>
+	<constraint name="pk_timetable_t" type="pk-constr" table="public.timetable_t">
+		<columns names="timetable_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<textbox name="Otrain" font-size="9">
+	<position x="60" y="200"/>
+	<comment><![CDATA[Section 320
+Date: 17th September
+
+Authors :
+Anton Hrytsyk
+Andrew LaBlanck
+
+]]></comment>
+</textbox>
+
+<constraint name="fk_route_t" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.route_t" table="public.route_stop_t">
+	<columns names="route_id" ref-type="src-columns"/>
+	<columns names="route_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_stop_t" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.stop_t" table="public.route_stop_t">
+	<columns names="stop_id" ref-type="src-columns"/>
+	<columns names="stop_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk2_driver_t" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.driver_t" table="public.train_t">
+	<columns names="driv_id" ref-type="src-columns"/>
+	<columns names="driv_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_timetabletrain" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.train_t" table="public.timetable_t">
+	<columns names="train_id" ref-type="src-columns"/>
+	<columns names="train_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_timetablerout" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.route_t" table="public.timetable_t">
+	<columns names="timetable_route" ref-type="src-columns"/>
+	<columns names="route_id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_route_stop_t_route_t" type="relfk"
+	 custom-color="#83af1f"
+	 src-table="public.route_stop_t"
+	 dst-table="public.route_t" reference-fk="fk_route_t"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_route_stop_t_stop_t" type="relfk"
+	 custom-color="#5aa578"
+	 src-table="public.route_stop_t"
+	 dst-table="public.stop_t" reference-fk="fk_stop_t"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_train_t_driver_t" type="relfk"
+	 custom-color="#4b3e56"
+	 src-table="public.train_t"
+	 dst-table="public.driver_t" reference-fk="fk2_driver_t"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_timetable_t_train_t" type="relfk"
+	 custom-color="#9ac721"
+	 src-table="public.timetable_t"
+	 dst-table="public.train_t" reference-fk="fk_timetabletrain"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_timetable_t_route_t" type="relfk"
+	 custom-color="#249b49"
+	 src-table="public.timetable_t"
+	 dst-table="public.route_t" reference-fk="fk_timetablerout"
+	 src-required="false" dst-required="false"/>
+
+</dbmodel>
