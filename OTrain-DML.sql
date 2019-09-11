@@ -1,5 +1,5 @@
 -- Otrain-DML.sql 
--- Authors: Hrytsyk Anton, Andrew LeBlanc 
+-- Authors: Hrytsyk Anton
 -- November 17 2018
 -- Last modified on November 17 2018, headers and footers were added
 -- 17 nov 2018, pg version
